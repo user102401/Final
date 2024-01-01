@@ -1,0 +1,125 @@
+javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class RetryableJavaQuizMaster {
+
+    public static void main(String[] args) {
+        runQuiz();
+    }
+
+    private static void runQuiz() {
+        int javaCoins = 0;
+
+        do {
+            List<QuizQuestion> quizQuestions = getShuffledQuestions();
+            int score = 0;
+
+            for (QuizQuestion question : quizQuestions) {
+                int userAnswerIndex = showOptionsAndGetAnswer(question.getQuestion(), question.getOptions());
+                if (userAnswerIndex == question.getCorrectAnswerIndex()) {
+                    score++;
+                    javaCoins += 50; // Earn 50 JavaCoins for a correct answer
+                } else {
+                    JOptionPane.showMessageDialog(null, "Incorrect. " + question.getExplanation());
+                }
+            }
+
+            // Display Results and JavaCoins earned
+            String resultMessage = "Quiz Completed!\nYour Score: " + score + " out of " + quizQuestions.size() + "\nJavaCoins Earned: " + javaCoins;
+            resultMessage += "\n\nWould you like to try the quiz again?";
+            int tryAgainChoice = JOptionPane.showConfirmDialog(null, resultMessage, "Quiz Results", JOptionPane.YES_NO_OPTION);
+
+            if (tryAgainChoice == JOptionPane.YES_OPTION) {
+                JOptionPane.showMessageDialog(null, "Great! Let's shuffle the questions and try again.", "Try Again", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Thank you for playing the quiz! Goodbye.", "Exit", JOptionPane.INFORMATION_MESSAGE);
+                break;
+            }
+
+        } while (true);
+    }
+
+    private static List<QuizQuestion> getShuffledQuestions() {
+        List<QuizQuestion> questions = new ArrayList<>();
+
+        // Question 1
+        String q1 = "What is the output of 'System.out.println(5 + 3 * 2)'?";
+        String[] q1Options = {"11", "16", "26", "Error"};
+        int q1CorrectAnswerIndex = 1;
+        String q1Explanation = "The correct answer is '16' because multiplication has higher precedence than addition.";
+        questions.add(new QuizQuestion(q1, shuffleOptions(q1Options), q1CorrectAnswerIndex, q1Explanation));
+
+        // Question 2
+        String q2 = "Which loop is used for definite iteration?";
+        String[] q2Options = {"While Loop", "For Loop", "Do-While Loop", "Switch Case"};
+        int q2CorrectAnswerIndex = 1;
+        String q2Explanation = "The correct answer is 'For Loop,' commonly used for definite iteration with a known number of repetitions.";
+        questions.add(new QuizQuestion(q2, shuffleOptions(q2Options), q2CorrectAnswerIndex, q2Explanation));
+
+        // Question 3
+        String q3 = "What is the purpose of the 'break' statement?";
+        String[] q3Options = {"To end the program", "To exit a loop or switch statement", "To print a message", "To define a method"};
+        int q3CorrectAnswerIndex = 1;
+        String q3Explanation = "The correct answer is 'To exit a loop or switch statement prematurely.'";
+        questions.add(new QuizQuestion(q3, shuffleOptions(q3Options), q3CorrectAnswerIndex, q3Explanation));
+
+        // Question 4
+        String q4 = "What is the default value of a boolean variable in Java?";
+        String[] q4Options = {"true", "false", "0", "null"};
+        int q4CorrectAnswerIndex = 1;
+        String q4Explanation = "The correct answer is 'false'.";
+        questions.add(new QuizQuestion(q4, shuffleOptions(q4Options), q4CorrectAnswerIndex, q4Explanation));
+
+        // Additional Questions (Feel free to add more!)
+        // ...
+
+        // Shuffle the questions
+        Collections.shuffle(questions);
+
+        return questions;
+    }
+
+    private static String[] shuffleOptions(String[] options) {
+        List<String> optionList = new ArrayList<>(List.of(options));
+        Collections.shuffle(optionList);
+        return optionList.toArray(String[]::new);
+    }
+
+    private static int showOptionsAndGetAnswer(String question, String[] options) {
+        return JOptionPane.showOptionDialog(null, question, "Java Quiz",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, options, options[0]);
+    }
+
+    private static class QuizQuestion {
+        private final String question;
+        private final String[] options;
+        private final int correctAnswerIndex;
+        private final String explanation;
+
+        public QuizQuestion(String question, String[] options, int correctAnswerIndex, String explanation) {
+            this.question = question;
+            this.options = options;
+            this.correctAnswerIndex = correctAnswerIndex;
+            this.explanation = explanation;
+        }
+
+        public String getQuestion() {
+            return question;
+        }
+
+        public String[] getOptions() {
+            return options;
+        }
+
+        public int getCorrectAnswerIndex() {
+            return correctAnswerIndex;
+        }
+
+        public String getExplanation() {
+            return explanation;
+        }
+    }
+}
